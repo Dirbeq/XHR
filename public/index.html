@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Super Chat</title>
+</head>
+
+<body>
+
+    <h1>Super Chat</h1>
+    <div id="chat"></div>
+    <input id="input" type="text" />
+    <button id="Envoyer" onclick=send()>Envoyer</button>
+    <a id="historique" href="/historique">
+        <button>
+            Page historique
+        </button>
+    </a>
+
+</body>
+
+<script type="text/javascript">
+    //WebSocket
+    console.log('open: ');
+    var ws = new WebSocket("ws://127.0.0.1:8081");
+
+    ws.onopen = function(event) {
+        console.log('Connection is open ...');
+    };
+
+    ws.onerror = function(err) {
+        console.log('err: ', err);
+    }
+
+    ws.onmessage = function(event) {
+        console.log(event.data);
+        document.getElementById('chat').innerHTML += event.data + '<br>';
+    };
+
+    ws.onclose = function() {
+        console.log("Connection is closed...");
+    }
+
+    function send() {
+        var message = document.getElementById('input').value;
+        ws.send(message);
+        document.getElementById('input').value="";
+    }
+    function rootHistorique()
+    {
+        window.location.href = myLoginUrl;
+    }
+</script>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+</head>
+
+<body>
+    <h1>historique : </h1>
+    <p id="requette"></p>
+</body>
+
+<script>
+    'use strict'
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", reqListener);
+    oReq.open("GET", "/api");
+    oReq.send();
+    function reqListener(data) {
+        console.log(data);
+        var txt = JSON.parse( this.responseText);
+        txt.forEach(element => {
+            console.log(element);
+        document.body.innerHTML += element.message + ' : ';
+        document.body.innerHTML += element.date + '<br>';
+        });
+        
+    }
+
+
+</script>
+
+</html>

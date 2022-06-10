@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XHR Demo</title>
+</head>
+<body>
+    <h1>XML HTTP Request Demo</h1>
+</body>
+
+<script>
+    'use strict'
+
+    function reqListener (data) {
+        document.body.innerHTML += this.responseText + '<br>';
+    }
+
+    setInterval(function () {
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", reqListener);
+        oReq.open("GET", "/api");
+        oReq.send();
+    }, 3000);
+</script>
