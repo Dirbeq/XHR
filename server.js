@@ -14,7 +14,7 @@ app.get('/historique', function (req, res) {
     res.sendFile(path.join(__dirname, '/public/indexSSE.html'))
 });
 app.get('/api', function (req, res) {
-   getHistorique().then(row => { res.send(row)});
+    getHistorique().then(row => { res.send(row) });
 });
 app.listen(3000);
 
@@ -41,6 +41,7 @@ wss.broadcast = function broadcast(msg) {
         client.send(msg);
     });
     saveMessage(msg);
+    sendSSE(msg);
 };
 function saveMessage(msg) {
     connDb.then(conn => {
@@ -73,4 +74,65 @@ function getHistorique() {
                 //console.log(err);
             });
     })
+}
+
+//SSE -------------------------------------------------------------------------------------------------------
+
+const http = require('http');
+const util = require('util');
+const fs = require('fs');
+
+
+http.createServer((request, response) => {
+    debugHeaders(request);
+
+    // requêtes stream initialisée par js
+    if (request.headers.accept && request.headers.accept == 'text/event-stream') {
+        if (request.url == '/events') {
+            sendSSE(request, response);
+        }
+        else {
+            response.writeHead(404);
+            response.end();
+        }
+    }
+    else {
+        // 1ère requête / réponse = moderateur.html
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.write(fs.readFileSync(__dirname + '/public/moderateur.html'));
+        response.end();
+    }
+}).listen(8002);
+
+
+
+const sendSSE = (request, response) => {
+    response.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+    });
+
+    const id = (new Date()).toLocaleTimeString();
+
+    setInterval(() => {
+        constructSSE(response, id, (new Date()).toLocaleTimeString());
+    }, 1000);
+
+    constructSSE(response, id, (new Date()).toLocaleTimeString());
+}
+
+
+const constructSSE = (response, id, data) => {
+    response.write('id: ' + id + '\n');
+    response.write("data: " + data + '\n\n');
+}
+
+
+const debugHeaders = (request) => {
+    util.puts('URL: ' + request.url);
+    for (let key in request.headers) {
+        util.puts(key + ': ' + request.headers[key]);
+    }
+    util.puts('\n\n');
 }
