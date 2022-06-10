@@ -11,11 +11,15 @@ var q = require('q');
 app.use(express.static(`${__dirname}/public`));
 
 app.get('/historique', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/indexSSE.html'))
+    res.sendFile(path.join(__dirname, '/public/historique.html'))
 });
 app.get('/api', function (req, res) {
     getHistorique().then(row => { res.send(row) });
 });
+app.get('/moderateur', function (req, res) {
+    res.sendFile(path.join(__dirname, '/public/moderateur.html'))
+});
+
 app.listen(3000);
 
 const WebSocketServer = require('ws').Server

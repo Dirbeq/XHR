@@ -7,10 +7,11 @@
 
 <body>
     <h1>SSE Modérateur</h1>
+    <div id="chat"></div>
     <script>
         var source = new EventSource('/events');
         source.onmessage = function (e) {
-            document.body.innerHTML += e.data + '<br>';
+            document.getElementById('chat').innerHTML += e.data + '<br>';
         };
     </script>
 </body>
